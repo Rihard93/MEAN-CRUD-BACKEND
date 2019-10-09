@@ -10,7 +10,7 @@ const ws_winnerController = require("./controllers/ws-winnersController");
 app.use(bodyParser.json());
 
 //Middleware para hacer uso de CORS y permitir requests de cualquier puerto o dominio
-app.use(cors({ origin : 'http://localhost:4200' }));
+app.use(cors());
 
 app.use('/winners', ws_winnerController);
 

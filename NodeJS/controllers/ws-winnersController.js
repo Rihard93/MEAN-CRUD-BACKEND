@@ -24,7 +24,7 @@ router.get('/:id',(req,res) =>{
     });
 });
 
-//Carga de datos a la base
+//Nuevo registro
 router.post('/', (req,res) => {
     var win = new WS_Winner({
         year: req.body.year,
@@ -39,7 +39,7 @@ router.post('/', (req,res) => {
     });
 });
 
-//Update a la base de datos
+//Update a un registro
 router.put('/:id',(req,res) =>{
     if(!ObjectId.isValid(req.params.id))        
         return res.status(400).send(`No information found with the provided id : ${req.params.id}`);
@@ -58,7 +58,7 @@ router.put('/:id',(req,res) =>{
     });
 });
 
-//Eliminar registros de la base de datos
+//Eliminar registros
 router.delete('/:id',(req,res) =>{
     if(!ObjectId.isValid(req.params.id))        
         return res.status(400).send(`No information found with the provided id : ${req.params.id}`);
