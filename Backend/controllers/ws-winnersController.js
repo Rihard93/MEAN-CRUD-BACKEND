@@ -8,14 +8,11 @@ const checker = require("../controllers/validator")
 router.get('/', async (req,res) =>{
     await WS_Winner.getWinners()
     .then(winners => res.status(200).json(winners))
-    .catch(err => {
+    /*.catch(err => {
         if (err.status){
             res.status(err.status).json({ message: err.message })
         }
-        else{
-            res.status(500).json({ message: err.message })
-        }
-    })
+    })*/
 })
 
 //Se obtiene la informacion por medio del id
@@ -26,9 +23,6 @@ router.get('/:id', checker.check_id, async (req, res) =>{
     .catch(err => {
         if(err.status){
             res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
         }
     })
 
@@ -41,7 +35,7 @@ router.post('/', checker.rev, async (req,res) =>{
         message: 'Winner added!',
         content: winner
     }))
-    .catch(err => res.status(500).json({ message: err.message }))
+    //.catch(err => res.status(err.status).json({ message: err.message }))
 })
 
 //Actualizar registro
@@ -57,9 +51,6 @@ router.put('/:id', checker.check_id, checker.rev, async (req,res) =>{
         if(err.status){
             res.status(err.status).json({ message: err.message })
         }
-        else{
-            res.status(500).json({ message: err.message })
-        }
     })
 })
 
@@ -74,9 +65,6 @@ router.delete('/:id', checker.check_id, (req,res) =>{
     .catch(err => {
         if(err.status){
             res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
         }
     })
 })

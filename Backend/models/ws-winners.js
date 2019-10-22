@@ -90,6 +90,7 @@ function deleteWinner(id){
 }
 
 module.exports = {
+    winners,
     getWinners,
     getWinner,
     insertWinner,

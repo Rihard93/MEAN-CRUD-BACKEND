@@ -11,3 +11,5 @@ app.use('/api/v1/winners', ws_winnerController);
 
 //Se establece el puerto en donde se iniciara el sitio web.
 app.listen(3000);
+
+module.exports = app; // Para realizar pruebas
