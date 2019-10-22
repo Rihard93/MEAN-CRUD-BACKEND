@@ -5,3 +5,7 @@ MEAN Stack CRUD - Course Project - Second Semester 2019 - Universidad Rafael Lan
 1. Go to Backend folder
 2. Execute **npm start**
 
+# Start Unit Tests
+1. Go to Backend folder
+2. Execute **npm run coverage**
+
