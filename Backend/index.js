@@ -16,3 +16,5 @@ app.use('/winners', ws_winnerController);
 
 //Se establece el puerto en donde se iniciara el sitio web.
 app.listen(3000);
+
+module.exports = app;

@@ -5,10 +5,11 @@ var { WS_Winner } = require("../models/ws-winners");
 var ObjectId = require('mongoose').Types.ObjectId; //Variable para realizar la busqueda de datos por medio de ID's validos
 
 //Se obtiene toda la informacion almacenada en la base de datos
-router.get('/', (req, res) => {
+router.get('/', (req,res) => {
     WS_Winner.find((err,docs) => {
-        if (!err) { res.send(docs); }
-        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2));  }
+        res.status(200).send(docs);
+        /*if (!err) { res.status(200).send(docs); }
+        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }*/
     });
 });
 
@@ -19,8 +20,9 @@ router.get('/:id',(req,res) =>{
     
     //Si el ID es correcto se realizar la busqueda por medio del ID enviado
     WS_Winner.findById(req.params.id, (err, doc) => {
-        if (!err) { res.send(doc); }
-        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2));  }
+        res.status(200).send(doc);
+        /*if (!err) { res.status(200).send(doc); }
+        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }*/
     });
 });
 
@@ -34,8 +36,9 @@ router.post('/', (req,res) => {
         mvp: req.body.mvp,
     });
     win.save((err,doc) =>{
-        if (!err) { res.send(doc); }
-        else { console.log("ERROR: Couldn't save data into database :" + JSON.stringify(err,undefined,2));  }
+        res.status(201).send(doc);
+        /*if (!err) { res.status(201).send(doc); }
+        else { console.log("ERROR: Couldn't save data into database :" + JSON.stringify(err,undefined,2)); }*/
     });
 });
 
@@ -53,8 +56,9 @@ router.put('/:id',(req,res) =>{
     };
     //Se hace activa la bandera de new para obtener la informacion actualizada
     WS_Winner.findByIdAndUpdate(req.params.id, { $set: win}, { new: true }, (err,doc) =>{
-        if (!err) { res.send(doc); }
-        else { console.log("ERROR: Couldn't update data in the database :" + JSON.stringify(err,undefined,2)); }
+        res.status(204).send(doc);
+        /*if (!err) { res.status(204).send(doc); }
+        else { console.log("ERROR: Couldn't update data in the database :" + JSON.stringify(err,undefined,2)); }*/
     });
 });
 
@@ -64,8 +68,9 @@ router.delete('/:id',(req,res) =>{
         return res.status(404).send(`No information found with the provided id : ${req.params.id}`);
     
     WS_Winner.findByIdAndRemove(req.params.id, (err,doc) => {
-        if (!err) { res.send(doc); }
-        else { console.log("ERROR: Couldn't delete data from database :" + JSON.stringify(err,undefined,2)); }
+        res.status(204).send(doc);
+        /*if (!err) { res.status(204).send(doc); }
+        else { console.log("ERROR: Couldn't delete data from database :" + JSON.stringify(err,undefined,2)); }*/
     });
 });
 
