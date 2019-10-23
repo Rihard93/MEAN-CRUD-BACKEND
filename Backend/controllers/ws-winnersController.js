@@ -1,84 +1,72 @@
 //Librerias, Controladores
 const express = require("express"); //Libreria para poder hacer uso del framework express.js
 var router = express.Router();
-var WS_Winner  = require("../models/ws-winners");
-const checker = require("../controllers/validator")
+var { WS_Winner } = require("../models/ws-winners");
+var ObjectId = require('mongoose').Types.ObjectId; //Variable para realizar la busqueda de datos por medio de ID's validos
 
 //Se obtiene toda la informacion almacenada en la base de datos
-router.get('/', async (req,res) =>{
-    await WS_Winner.getWinners()
-    .then(winners => res.status(200).json(winners))
-    .catch(err => {
-        if (err.status){
-            res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
-        }
-    })
-})
+router.get('/', (req, res) => {
+    WS_Winner.find((err,docs) => {
+        if (!err) { res.send(docs); }
+        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2));  }
+    });
+});
 
 //Se obtiene la informacion por medio del id
-router.get('/:id', checker.check_id, async (req, res) =>{
-    const id = req.params.id
-     await WS_Winner.getWinner(id)
-    .then(winner => res.status(200).json(winner))
-    .catch(err => {
-        if(err.status){
-            res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
-        }
-    })
-
-})
+router.get('/:id',(req,res) =>{
+    if(!ObjectId.isValid(req.params.id))        
+        return res.status(404).send(`No information found with the provided id : ${req.params.id}`);
+    
+    //Si el ID es correcto se realizar la busqueda por medio del ID enviado
+    WS_Winner.findById(req.params.id, (err, doc) => {
+        if (!err) { res.send(doc); }
+        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2));  }
+    });
+});
 
 //Nuevo registro
-router.post('/', checker.rev, async (req,res) =>{
-     await WS_Winner.insertWinner(req.body)
-    .then(winner => res.status(201).json({
-        message: 'Winner added!',
-        content: winner
-    }))
-    .catch(err => res.status(500).json({ message: err.message }))
-})
+router.post('/', (req,res) => {
+    var win = new WS_Winner({
+        year: req.body.year,
+        winner: req.body.winner,
+        runnerup: req.body.runnerup,
+        result: req.body.result,
+        mvp: req.body.mvp,
+    });
+    win.save((err,doc) =>{
+        if (!err) { res.send(doc); }
+        else { console.log("ERROR: Couldn't save data into database :" + JSON.stringify(err,undefined,2));  }
+    });
+});
 
-//Actualizar registro
-router.put('/:id', checker.check_id, checker.rev, async (req,res) =>{
-    const id = req.params.id
-    await WS_Winner.updateWinner(id, req.body)
-    .then(res.status(204))
-    /*.then(winner => res.json({
-        message: 'Winner updated!',
-        content: winner
-    }))*/
-    .catch(err => {
-        if(err.status){
-            res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
-        }
-    })
-})
+//Update a un registro
+router.put('/:id',(req,res) =>{
+    if(!ObjectId.isValid(req.params.id))        
+        return res.status(404).send(`No information found with the provided id : ${req.params.id}`);
 
-//Eliminar registro
-router.delete('/:id', checker.check_id, (req,res) =>{
-    const id = req.params.id
-    WS_Winner.deleteWinner(id)
-    .then(res.status(204))
-    /*.then(res.json({
-        message: 'Winner deleted!'             
-    }))*/
-    .catch(err => {
-        if(err.status){
-            res.status(err.status).json({ message: err.message })
-        }
-        else{
-            res.status(500).json({ message: err.message })
-        }
-    })
-})
+    var win = {
+        year: req.body.year,
+        winner: req.body.winner,
+        runnerup: req.body.runnerup,
+        result: req.body.result,
+        mvp: req.body.mvp,
+    };
+    //Se hace activa la bandera de new para obtener la informacion actualizada
+    WS_Winner.findByIdAndUpdate(req.params.id, { $set: win}, { new: true }, (err,doc) =>{
+        if (!err) { res.send(doc); }
+        else { console.log("ERROR: Couldn't update data in the database :" + JSON.stringify(err,undefined,2)); }
+    });
+});
 
-module.exports = router
+//Eliminar registros
+router.delete('/:id',(req,res) =>{
+    if(!ObjectId.isValid(req.params.id))        
+        return res.status(404).send(`No information found with the provided id : ${req.params.id}`);
+    
+    WS_Winner.findByIdAndRemove(req.params.id, (err,doc) => {
+        if (!err) { res.send(doc); }
+        else { console.log("ERROR: Couldn't delete data from database :" + JSON.stringify(err,undefined,2)); }
+    });
+});
+
+module.exports = router;
