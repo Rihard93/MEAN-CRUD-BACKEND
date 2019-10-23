@@ -35,18 +35,18 @@ router.post('/', checker.rev, async (req,res) =>{
         message: 'Winner added!',
         content: winner
     }))
-    //.catch(err => res.status(err.status).json({ message: err.message }))
+    .catch(err => res.status(err.status).json({ message: err.message }))
 })
 
 //Actualizar registro
 router.put('/:id', checker.check_id, checker.rev, async (req,res) =>{
     const id = req.params.id
     await WS_Winner.updateWinner(id, req.body)
-    .then(res.status(204))
-    /*.then(winner => res.json({
+    //.then(res.status(204))
+    .then(winner => res.status(204).json({
         message: 'Winner updated!',
         content: winner
-    }))*/
+    }))
     .catch(err => {
         if(err.status){
             res.status(err.status).json({ message: err.message })
@@ -55,13 +55,13 @@ router.put('/:id', checker.check_id, checker.rev, async (req,res) =>{
 })
 
 //Eliminar registro
-router.delete('/:id', checker.check_id, (req,res) =>{
+router.delete('/:id', checker.check_id, async (req,res) =>{
     const id = req.params.id
-    WS_Winner.deleteWinner(id)
-    .then(res.status(204))
-    /*.then(res.json({
-        message: 'Winner deleted!'             
-    }))*/
+    await WS_Winner.deleteWinner(id)
+    //.then(res.status(204))
+    .then(winner => res.status(204).json({
+        message: 'Winner deleted!'
+    }))
     .catch(err => {
         if(err.status){
             res.status(err.status).json({ message: err.message })

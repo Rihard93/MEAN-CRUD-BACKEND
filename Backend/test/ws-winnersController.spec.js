@@ -66,8 +66,12 @@ describe('/POST winners', () =>{
         chai.request(server)
         .post('/api/v1/winners')
         .send(winner)
-        .end((err,res) => {
+        .then(res => {
             res.should.have.status(201);
+            done();
+        })
+        .catch(err => {
+            res.should.have.status(err.status);
             done();
         })
     })
@@ -91,7 +95,7 @@ describe('/POST winners', () =>{
 
 describe('/UPDATE winners', () =>{
 
-    it("should update a winner", (done) =>{ ///ARREGLAR!!!!!!!!!!!
+    it("should update a winner", (done) =>{ 
         let winner = {
             year: 2013,
             winner: "San Francisco Giants",
@@ -103,10 +107,15 @@ describe('/UPDATE winners', () =>{
         chai.request(server)
         .put(`/api/v1/winners/${id}`)
         .send(winner)
-        .end((err,res) => {
+        .then(res => {
             res.should.have.status(204);
             done();
-        })                
+        })
+        .catch(err => {
+            res.should.have.status(err.status);
+            done();
+        })
+               
     })
 
     it("should not update a winner as ID does not exist", (done) =>{
@@ -155,7 +164,7 @@ describe('/DELETE winners', () =>{
         .end((err,res) => {
             res.should.have.status(204);
             done();
-        })        
+        })       
     })
 
     it("should not delete a winner as ID does not exist", (done) =>{
@@ -165,7 +174,7 @@ describe('/DELETE winners', () =>{
         .end((err,res) => {
             res.should.have.status(404);
             done();
-        })        
+        })               
     })
     
     it("should not delete a winner as ID is a text", (done) =>{
@@ -175,6 +184,6 @@ describe('/DELETE winners', () =>{
         .end((err,res) => {
             res.should.have.status(400);
             done();
-        })        
+        })               
     })    
 })

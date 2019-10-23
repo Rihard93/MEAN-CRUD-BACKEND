@@ -5,12 +5,12 @@ var id;
 
 function getWinners(){
     return new  Promise((resolve, reject) =>{
-        if(winners.length === 0){
+        /*if(winners.length === 0){
             reject({
                 message: 'No winners available',
                 status: 202
             })
-        }
+        }*/
         resolve(winners)
     })
 }
@@ -30,18 +30,14 @@ function getWinner(id){
 
 function insertWinner(newWinner){    
     return new Promise((resolve,reject) =>{
-        if(winners.length > 0){
-            id = winners[winners.length -1].id + 1;
-        }
-        else{
-            id = 1;
-        }
+        
+        id = winners[winners.length -1].id + 1;
         newWinner = {id, ...newWinner}
         winners.push(newWinner)
         fs.writeFileSync(file, JSON.stringify(winners), 'utf8', (err) => {
-            if(err){
+            /*if(err){
                 console.log(err);
-            }
+            }*/
         })
         resolve(newWinner)
     })
@@ -60,12 +56,12 @@ function updateWinner(id, newWinner){
         id = {id: row.id}
         winners[index] = {...id, ...newWinner}        
         fs.writeFileSync(file, JSON.stringify(winners), 'utf8', (err) => {
-            if(err){
+            /*if(err){
                 console.log(err);
-            }
+            }*/
         })        
         resolve(winners[index])
-        .catch(err => reject(err))
+        //.catch(err => reject(err))
     })
 }
 
@@ -80,12 +76,12 @@ function deleteWinner(id){
         } 
         winners = winners.filter(w => w.id !== row.id)        
         fs.writeFileSync(file, JSON.stringify(winners), 'utf8', (err) => {
-            if(err){
+            /*if(err){
                 console.log(err);
-            }
+            }*/
         })
         resolve()
-        .catch(err => reject(err))      
+        //.catch(err => reject(err))      
     })
 }
 
