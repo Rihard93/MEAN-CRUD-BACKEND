@@ -3,26 +3,50 @@ const express = require("express"); //Libreria para poder hacer uso del framewor
 var router = express.Router();
 var { WS_Winner } = require("../models/ws-winners");
 var ObjectId = require('mongoose').Types.ObjectId; //Variable para realizar la busqueda de datos por medio de ID's validos
+var redis = require('redis');
+const client = redis.createClient(6379, redis); //Se inicializa el cliente de redis
 
-//Se obtiene toda la informacion almacenada en la base de datos
-router.get('/', (req,res) => {
-    WS_Winner.find((err,docs) => {
-        res.status(200).send(docs);
-        /*if (!err) { res.status(200).send(docs); }
-        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }*/
+router.get('/', (req,res) =>{
+    var redis_id = 1;
+    client.get(redis_id, (err,docs)=>{
+        if(err) { console.log('Error while retrieving the data from redis!: ' + err); }
+        if(docs){
+            console.log('Existe en redis!');
+            res.status(200).send(JSON.parse(docs));
+        }
+        else{
+            console.log('No existe en redis!');
+            WS_Winner.find((err,docs) =>{ 
+                if(!err){
+                    client.setex(redis_id, 30, JSON.stringify(docs));
+                    console.log('Response ingresado a redis!')
+                    res.status(200).send(docs);                   
+                }
+                else{ console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }
+            });
+        }
     });
 });
 
 //Se obtiene la informacion por medio del id
 router.get('/:id',(req,res) =>{
-    if(!ObjectId.isValid(req.params.id))        
-        return res.status(404).send(`No information found with the provided id : ${req.params.id}`);
-    
-    //Si el ID es correcto se realizar la busqueda por medio del ID enviado
-    WS_Winner.findById(req.params.id, (err, doc) => {
-        res.status(200).send(doc);
-        /*if (!err) { res.status(200).send(doc); }
-        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }*/
+    client.get(req.params.id, (err, doc) =>{
+        if(err) { console.log('Error while retrieving the data from Redis: ' + err);}
+        if(doc){
+            console.log('Existe en redis!');
+            res.status(200).send(JSON.parse(doc));
+        }
+        else{
+            console.log('No existe en redis!')
+            WS_Winner.findById(req.params.id, (err,doc) =>{
+                if(!err){ 
+                    client.setex(req.params.id, 30, JSON.stringify(doc));
+                    console.log('Response ingresado a redis!')
+                    res.status(200).send(doc);
+                 }
+                 else { res.status(404).send(`No information found with the provided id : ${req.params.id}`); }
+            });
+        }
     });
 });
 
