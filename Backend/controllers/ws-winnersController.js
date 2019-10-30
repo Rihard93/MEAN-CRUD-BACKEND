@@ -21,8 +21,8 @@ router.get('/:id',(req,res) =>{
     //Si el ID es correcto se realizar la busqueda por medio del ID enviado
     WS_Winner.findById(req.params.id, (err, doc) => {
         res.status(200).send(doc);
-        /*if (!err) { res.status(200).send(doc); }
-        else { console.log("ERROR: Couldn't retrive data from database :" + JSON.stringify(err,undefined,2)); }*/
+        /*if (!err) { return res.status(200).send(doc); }
+        else { return res.status(404).send(`No information found with the provided id : ${req.params.id}`); }*/
     });
 });
 

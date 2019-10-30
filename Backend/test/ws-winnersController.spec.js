@@ -16,8 +16,7 @@ describe('/GET winners', () =>{
         .end((err,res) =>{
             res.should.have.status(200);
             res.body.should.be.a('array');            
-            done();
-            
+            done();            
         })
     });
     
@@ -71,7 +70,7 @@ describe('/POST winners', () =>{
             res.body.should.have.property('result');
             res.body.should.have.property('mvp');
             global_id = res.body._id;
-            console.log(global_id);          
+            //console.log(global_id);          
             done();
             
         })
