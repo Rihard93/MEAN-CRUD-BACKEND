@@ -4,7 +4,8 @@ var router = express.Router();
 var { WS_Winner } = require("../models/ws-winners");
 var ObjectId = require('mongoose').Types.ObjectId; //Variable para realizar la busqueda de datos por medio de ID's validos
 var redis = require('redis');
-const client = redis.createClient(6379, redis); //Se inicializa el cliente de redis
+const client = redis.createClient('redis://redis:6379') //Se inicializa el cliente de redis
+
 
 router.get('/', (req,res) =>{
     var redis_id = 1;
